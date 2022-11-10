@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -25,31 +26,36 @@ namespace GameOfLife
 
         private void StartAd()
         {
-            
+            if (adWindow != null && adWindow.Any(x => x != null))
             {
-                adWindow = new AdWindow[2];
-                for (int i = 0; i < 2; i++)
-                {
-                    if (adWindow[i] == null)
-                    {
-                        adWindow[i] = new AdWindow(this);
-                        adWindow[i].Closed += AdWindowOnClosed;
-                        adWindow[i].Top = this.Top + (330 * i) + 70;
-                        adWindow[i].Left = this.Left + 240;                        
-                        adWindow[i].Show();
-                    }
-                }
-                
-                
+                return;
             }
+
+            adWindow = new AdWindow[2];
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (adWindow[i] == null)
+                {
+                    adWindow[i] = new AdWindow(this);
+                    adWindow[i].Closed += AdWindowOnClosed;
+                    adWindow[i].Top = this.Top + (330 * i) + 70;
+                    adWindow[i].Left = this.Left + 240;
+                    adWindow[i].Show();
+                }
+            }
+
         }
 
         private void AdWindowOnClosed(object sender, EventArgs eventArgs)
         {
             for (int i = 0; i < 2; i++)
             {
-                adWindow[i].Closed -= AdWindowOnClosed;
-                adWindow[i] = null;
+                if (adWindow[i] != null)
+                {
+                    adWindow[i].Closed -= AdWindowOnClosed;
+                    adWindow[i] = null;
+                }
             }
             
             
